@@ -1,47 +1,35 @@
 package Medium;
 
-import java.util.*;
-
 public class P207_CourseSchedule {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        ArrayList[] graph = new ArrayList[numCourses];
-        for (int i = 0; i < numCourses; i++) {
-            graph[i] = new ArrayList<Integer>();
+        if (numCourses == 0) {
+            return true;
         }
-        boolean[] visited = new boolean[numCourses];
 
+        int[] in = new int[numCourses];
         for (int i = 0; i < prerequisites.length; i++) {
-            graph[prerequisites[i][1]].add(prerequisites[i][0]);
+            in[prerequisites[i][1]]++;
         }
 
+        boolean[] visited = new boolean[prerequisites.length];
+        boolean change = true;
+        while (change) {
+            change = false;
+            for (int i = 0; i < prerequisites.length; i++) {
+                if (!visited[i]) {
+                    if (in[prerequisites[i][0]] == 0 && in[prerequisites[i][1]] != 0) {
+                        visited[i] = true;
+                        in[prerequisites[i][1]]--;
+                        change = true;
+                    }
+                }
+            }
+        }
         for (int i = 0; i < numCourses; i++) {
-            if (!dfs(graph, visited, i)) {
+            if (in[i] != 0) {
                 return false;
             }
         }
         return true;
-    }
-
-    private boolean dfs(ArrayList[] graph, boolean[] visited, int course) {
-        if (visited[course]) {
-            return false;
-        } else {
-            visited[course] = true;
-        }
-
-        for (int i = 0; i < graph[course].size(); i++) {
-            if (!dfs(graph, visited, (int)graph[course].get(i))) {
-                return false;
-            }
-        }
-        visited[course] = false;
-        return true;
-    }
-
-    public static void main(String[] args) {
-        int[][] test = {{1,0}};
-        boolean b = new P207_CourseSchedule().canFinish(3, test);
-        System.out.println("b = " + b);
-
     }
 }
