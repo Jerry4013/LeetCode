@@ -1,5 +1,6 @@
 package Medium;
 
+
 public class P19_RemoveNthNodeFromEndofList {
     public ListNode removeNthFromEnd(ListNode head, int n) {
         ListNode detector = head;
