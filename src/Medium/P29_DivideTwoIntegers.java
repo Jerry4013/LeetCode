@@ -2,50 +2,48 @@ package Medium;
 
 public class P29_DivideTwoIntegers {
     public int divide(int dividend, int divisor) {
-        if (dividend == 0) {
+        int sign = 1;
+        if ((dividend > 0 && divisor < 0) || (dividend < 0 && divisor > 0))
+            sign = -1;
+        long longDividend = Math.abs((long) dividend);
+        long longDivisor = Math.abs((long) divisor);
+
+        //Take care the edge cases.
+        if (longDivisor == 0) return Integer.MAX_VALUE;
+        if ((longDividend == 0) || (longDividend < longDivisor)) {
             return 0;
         }
-        boolean negative = false;
-        if (dividend > 0 && divisor < 0 || dividend < 0 && divisor > 0) {
-            negative = true;
-        }
-        String dividendString = String.valueOf(Math.abs((long)dividend));
-        long newDivisor = Math.abs((long)divisor);
-        String divisorString = String.valueOf(newDivisor);
-        int length = divisorString.length();
 
-        StringBuilder sb = new StringBuilder();
+        long lans = ldivide(longDividend, longDivisor);
 
-        while (dividendString.length() > 0 && Long.parseLong(dividendString) >= newDivisor) {
-            long currentDigit = 0, temp = newDivisor;
-            long curDividend = Integer.parseInt(dividendString.substring(0, length));
-            boolean borrow = false;
-            if (curDividend < newDivisor) {
-                borrow = true;
-                curDividend = Integer.parseInt(dividendString.substring(0, length + 1));
-            }
-            while (temp <= curDividend) {
-                currentDigit++;
-                temp += newDivisor;
-            }
-            sb.append(currentDigit);
-            temp -= newDivisor;
-            dividendString = (curDividend - temp == 0 ? "" : (curDividend - temp)) +
-                    dividendString.substring(borrow ? (length + 1) : length);
+        int ans;
+        if (lans > Integer.MAX_VALUE){ //Handle overflow.
+            ans = (sign == 1) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        } else {
+            ans = (int) (sign * lans);
         }
-        if (sb.length() == 0) {
-            return 0;
+        return ans;
+    }
+
+    private long ldivide(long ldividend, long ldivisor) {
+        // Recursion exit condition
+        if (ldividend < ldivisor) return 0;
+
+        //  Find the largest multiple so that (divisor * multiple <= dividend),
+        //  whereas we are moving with stride 1, 2, 4, 8, 16...2^n for performance reason.
+        //  Think this as a binary search.
+        long sum = ldivisor;
+        long multiple = 1;
+        while ((sum + sum) <= ldividend) {
+            sum += sum;
+            multiple += multiple;
         }
-        long ans = Long.parseLong(sb.toString());
-        long res = negative ? (-ans) : ans;
-        if (res > Integer.MAX_VALUE || res < Integer.MIN_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) (res);
+        //Look for additional value for the multiple from the reminder (dividend - sum) recursively.
+        return multiple + ldivide(ldividend - sum, ldivisor);
     }
 
     public static void main(String[] args) {
-        int divide = new P29_DivideTwoIntegers().divide(1, 2);
+        int divide = new P29_DivideTwoIntegers().divide(2147483647, 2);
         System.out.println("divide = " + divide);
     }
 }
