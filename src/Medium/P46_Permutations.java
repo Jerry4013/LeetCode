@@ -5,36 +5,37 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class P46_Permutations {
+    List<List<Integer>> ans = new LinkedList<>();
     public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> result = new LinkedList<>();
-        if(nums.length==0)
-            return result;
+        if(nums.length == 0)
+            return ans;
 
-        permuteHelper(nums, nums.length, nums.length, result);
-        return result;
+        permuteHelper(nums, nums.length);
+        return ans;
     }
 
-    public void permuteHelper(int[] nums, int size, int n, List<List<Integer>> result) {
+    public void permuteHelper(int[] nums, int size) {
 
-        if(size == 1) { // add combo in list
+        if(size == 1) {
             List<Integer> combo = new LinkedList<>();
-            for(int i = 0; i < nums.length; i++) {
-                combo.add(nums[i]);
+            for (int num : nums) {
+                combo.add(num);
             }
-            result.add(combo);
+            ans.add(combo);
+            return;
         }
 
         for(int i = 0; i < size; i++) {
-            permuteHelper(nums, size-1, n, result);
+            permuteHelper(nums, size - 1);
 
-            if(size%2==1) {
+            if(size % 2 == 1) {
                 int temp = nums[0];
-                nums[0] = nums[size-1];
-                nums[size-1] = temp;
+                nums[0] = nums[size - 1];
+                nums[size - 1] = temp;
             } else {
                 int temp = nums[i];
-                nums[i] = nums[size-1];
-                nums[size-1] = temp;
+                nums[i] = nums[size - 1];
+                nums[size - 1] = temp;
             }
         }
     }
