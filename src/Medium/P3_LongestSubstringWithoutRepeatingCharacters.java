@@ -11,4 +11,9 @@ public class P3_LongestSubstringWithoutRepeatingCharacters {
         }
         return ans;
     }
+
+    public static void main(String[] args) {
+        int abcabcbb = new P3_LongestSubstringWithoutRepeatingCharacters().lengthOfLongestSubstring("abcabcbb");
+        System.out.println("abcabcbb = " + abcabcbb);
+    }
 }
