@@ -4,39 +4,28 @@ import java.util.*;
 
 public class P49_GroupAnagrams {
     public List<List<String>> groupAnagrams(String[] strs) {
-        Map<Word, List<String>> map = new HashMap<>();
+        HashMap<String, List<String>> map = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
         for (String str : strs) {
-            Word word = new Word(str);
-            List<String> list = map.getOrDefault(word, new ArrayList<>());
+            int[] count = new int[26];
+            for (int i = 0; i < str.length(); i++) {
+                count[str.charAt(i) - 'a']++;
+            }
+            for (int i = 0; i < count.length; i++) {
+                if (count[i] > 0) {
+                    sb.append(count[i]);
+                    sb.append((char)('a' + i));
+                }
+            }
+            List<String> list = map.getOrDefault(sb.toString(), new ArrayList<>());
             list.add(str);
-            map.put(word, list);
+            map.put(sb.toString(), list);
+            sb.setLength(0);
         }
         return new ArrayList<>(map.values());
     }
 
-    static class Word {
-        int[] freq;
-        public Word(String s) {
-            freq = new int[26];
-            char[] chars = s.toCharArray();
-            for (char c : chars) {
-                freq[c - 'a']++;
-            }
-        }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Word word = (Word) o;
-            return Arrays.equals(freq, word.freq);
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(freq);
-        }
-    }
 
     public static void main(String[] args) {
         List<List<String>> lists = new P49_GroupAnagrams().groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
